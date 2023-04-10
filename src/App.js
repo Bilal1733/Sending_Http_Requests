@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 import MoviesList from './components/MoviesList';
+import AddMovie from './components/AddMovie';
 import './App.css';
 
 function App() {
@@ -12,8 +13,9 @@ function App() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch('https://swapi.py4e.com/api/films');
-
+      const response = await fetch(
+        'https://react-http-c529f-default-rtdb.firebaseio.com/movie.json'
+      );
       if (!response.ok) {
         throw new Error('Something went wrong!');
       }
@@ -25,11 +27,10 @@ function App() {
           id: movieData.episode_id,
           title: movieData.title,
           openingText: movieData.opening_crawl,
-          realeaseDate: movieData.release_date,
+          releaseDate: movieData.release_date,
         };
       });
       setMovies(transformedMovies);
-      setIsLoading(false);
     } catch (error) {
       setError(error.message);
     }
@@ -39,6 +40,10 @@ function App() {
   useEffect(() => {
     fetchMoviesHandler();
   }, [fetchMoviesHandler]);
+
+  function addMovieHandler(movie) {
+    console.log(movie);
+  }
 
   let content = <p>Found no movies.</p>;
 
@@ -56,6 +61,9 @@ function App() {
 
   return (
     <React.Fragment>
+      <section>
+        <AddMovie onAddMovie={addMovieHandler} />
+      </section>
       <section>
         <button onClick={fetchMoviesHandler}>Fetch Movies</button>
       </section>
